@@ -1,8 +1,6 @@
 # github-webhookd
 Tiny API that triggers Jenkins builds from GitHub Webhook
 
-**This project is no longer maintained and it is broken. One of the dependent libraries is retired**
-
 ## CLI
 The following CLI commands are available:
 ```
@@ -12,7 +10,7 @@ github-webhookd start --config=PATH_TO_CONFIG_FILE
 ## Building
 Ensure you have your
 [workspace directory](https://golang.org/doc/code.html#Workspaces) created.
-Change directory to $GOPATH/github.com/gasiordev/github-webhookd and run
+Change directory to $GOPATH/github.com/mikogs/github-webhookd and run
 the following commands:
 
 ```
