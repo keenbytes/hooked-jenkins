@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	gocli "github.com/MikolajGasior/go-mod-cli"
+	gocli "github.com/bitsnops/go-broccli"
 	"os"
 )
 
@@ -19,7 +19,7 @@ func NewCLI() *CLI {
 func (cli *CLI) Init(app *App) {
 	cli.app = app
 
-	cli.gocli = gocli.NewCLI("github-webhookd", "Tiny API to receive GitHub Webhooks and trigger Jenkins jobs", "Mikolaj Gasior <miko@dsp.gs>")
+	cli.gocli = gocli.NewCLI("github-webhookd", "Tiny API to receive GitHub Webhooks and trigger Jenkins jobs", "Nicholas Gasior")
 
 	cmdStart := cli.gocli.AddCmd("start", "Starts API", cli.startHandler)
 	cmdStart.AddFlag("config", "c", "config", "Config file", gocli.TypePathFile|gocli.MustExist|gocli.Required, nil)

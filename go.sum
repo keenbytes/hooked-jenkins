@@ -1,4 +1,4 @@
-github.com/MikolajGasior/go-mod-cli v1.0.0 h1:YNP1TnQgKGFw9KF1Zgf+2PLPr445kzjxHPl1rZgIRak=
-github.com/MikolajGasior/go-mod-cli v1.0.0/go.mod h1:M4KyBYxD8cWYLuB62FTs/Ng4pkyqcuOjnQlAYWidyic=
+github.com/bitsnops/go-broccli v1.0.0 h1:0+AtzSZ74U0NGufYLYJb6blJ9uCB0Xq61Tdz/Np/Z2c=
+github.com/bitsnops/go-broccli v1.0.0/go.mod h1:rGxWdzSbu6/BMH7lkWBNPGSixhlmSW1kK7K+a1RJKwo=
 github.com/gorilla/mux v1.8.0 h1:i40aqfkR1h2SlN9hojwV5ZA91wcXFOvkdNIeFDP5koI=
 github.com/gorilla/mux v1.8.0/go.mod h1:DVbg23sWSpFRCP0SfiEN6jmj59UnW/n46BH5rLB71So=
