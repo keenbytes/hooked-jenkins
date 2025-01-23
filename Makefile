@@ -1,15 +1,9 @@
 VERSION?=$$(cat version.go | grep VERSION | cut -d"=" -f2 | sed 's/"//g' | sed 's/ //g')
 GOFMT_FILES?=$$(find . -name '*.go')
 PROJECT_BIN?=github-webhookd
-PROJECT_SRC?=github.com/gasiordev/github-webhookd
+PROJECT_SRC?=github.com/bitsnops/github-webhookd
 
 default: build
-
-guard-%:
-	@ if [ "${${*}}" = "" ]; then \
-		echo "Environment variable $* not set"; \
-		exit 1; \
-	fi
 
 fmt:
 	gofmt -w $(GOFMT_FILES)
@@ -23,16 +17,16 @@ fmtcheck:
 		exit 1; \
 	fi
 
-build: guard-GOPATH
-	mkdir -p $$GOPATH/bin/linux
-	mkdir -p $$GOPATH/bin/darwin
-	GOOS=linux GOARCH=amd64 go build -v -o $$GOPATH/bin/linux/${PROJECT_BIN} $$GOPATH/src/${PROJECT_SRC}/*.go
-	GOOS=darwin GOARCH=amd64 go build -v -o $$GOPATH/bin/darwin/${PROJECT_BIN} $$GOPATH/src/${PROJECT_SRC}/*.go
+build:
+	mkdir -p target/bin/linux
+	mkdir -p target/bin/darwin
+	GOOS=linux GOARCH=amd64 go build -v -o target/bin/linux/${PROJECT_BIN} *.go
+	GOOS=darwin GOARCH=amd64 go build -v -o target/bin/darwin/${PROJECT_BIN} *.go
 
 release: build
-	mkdir -p $$GOPATH/releases
-	tar -cvzf $$GOPATH/releases/${PROJECT_BIN}-${VERSION}-linux-amd64.tar.gz -C $$GOPATH/bin/linux ${PROJECT_BIN}
-	tar -cvzf $$GOPATH/releases/${PROJECT_BIN}-${VERSION}-darwin-amd64.tar.gz -C $$GOPATH/bin/darwin ${PROJECT_BIN}
+	mkdir -p target/releases
+	tar -cvzf target/releases/${PROJECT_BIN}-${VERSION}-linux-amd64.tar.gz -C target/bin/linux ${PROJECT_BIN}
+	tar -cvzf target/releases/${PROJECT_BIN}-${VERSION}-darwin-amd64.tar.gz -C target/bin/darwin ${PROJECT_BIN}
 
 .NOTPARALLEL:
 

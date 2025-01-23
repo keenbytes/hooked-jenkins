@@ -1,0 +1,36 @@
+---
+name: PR commit
+
+on:
+  pull_request:
+    branches:
+      - main
+
+concurrency:
+  group: ${{ github.ref }}-${{ github.workflow }}
+  cancel-in-progress: true
+
+jobs:
+  main:
+    name: Test and build
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v4
+
+      - name: Download golang
+        shell: bash
+        run: |
+          wget https://go.dev/dl/go1.21.1.linux-amd64.tar.gz
+          mkdir -p $(pwd)/.bin/golang
+          tar -C $(pwd)/.bin/golang -xzf go1.21.1.linux-amd64.tar.gz
+
+      - name: Run tests
+        shell: bash
+        run: |
+          $(pwd)/.bin/golang/go/bin/go test
+
+      - name: Run build
+        shell: bash
+        run: |
+          $(pwd)/.bin/golang/go/bin/go build

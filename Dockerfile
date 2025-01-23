@@ -1,17 +1,16 @@
 FROM golang:alpine AS builder
-LABEL maintainer="Mikolaj Gasior"
+LABEL maintainer="Nicholas Gasior"
 
 RUN apk add --update git bash openssh make
 
-WORKDIR /go/src/github.com/gasiordev/github-webhookd
+WORKDIR /go/src/github.com/bitsnops/github-webhookd
 COPY . .
-RUN make tools
 RUN make build
 
 FROM alpine:latest
 RUN apk --no-cache add ca-certificates
 
 WORKDIR /bin
-COPY --from=builder /go/bin/linux/github-webhookd .
+COPY --from=builder /go/src/github.com/bitsnops/github-webhookd/target/bin/linux/github-webhookd .
 
 ENTRYPOINT ["/bin/github-webhookd"]

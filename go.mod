@@ -1,8 +1,8 @@
-module github.com/gasiordev/github-webhookd
+module github.com/bitsnops/github-webhookd
 
-go 1.17
+go 1.18
 
 require (
-	github.com/gasiordev/go-cli v0.4.0
+	github.com/bitsnops/go-broccli v1.0.0
 	github.com/gorilla/mux v1.8.0
 )
