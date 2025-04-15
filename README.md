@@ -1,29 +1,22 @@
-# github-webhookd
+# hooked-jenkins
 Tiny API that triggers Jenkins builds from GitHub Webhook
 
-> ⚠️  The project is really old and have not been maintained for years, and
-it is probably bad code. However, some code snippets regarding Jenkins
-might be useful.
+> ⚠️  The project is really old and have not been maintained for years. It 
+has been just slightly refreshed recently. However, some code snippets
+regarding Jenkins might be useful.
 
 ## CLI
 The following CLI commands are available:
 ```
-github-webhookd start --config=PATH_TO_CONFIG_FILE
+hooked-jenkins start --config=PATH_TO_CONFIG_FILE
 ```
 
 ## Building
-Ensure you have your
-[workspace directory](https://golang.org/doc/code.html#Workspaces) created.
-Change directory to $GOPATH/github.com/bitsnops/github-webhookd and run
-the following commands:
+Run the following command to compile binary:
 
 ```
-make tools
-make
+go build -o hooked-jenkins
 ```
-
-Binary files will be build in `$GOPATH/bin/linux` and `$GOPATH/bin/darwin`
-directories.
 
 ## Configuration
 Look at `config-sample.json` to see how the configuration file look like. It has
@@ -110,12 +103,5 @@ level as `triggers`):
 Execute the binary, eg.
 
 ```
-./github-webhookd start --config=PATH_TO_CONFIG_FILE
+./hooked-jenkins start --config=PATH_TO_CONFIG_FILE
 ```
-
-## Development
-Follow the steps mentioned in `Building` section. Additionally, there are
-commands that might be useful:
-
-* `make fmt` will use `gofmt` to reformat the code;
-* `make fmtcheck` will use `gofmt` to check the code intending.
