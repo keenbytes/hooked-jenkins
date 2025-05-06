@@ -1,34 +1,35 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"os"
 
 	"gopkg.pl/mikogs/octo-linter/pkg/loglevel"
-	"gopkg.pl/phings/broccli"
+	"gopkg.pl/mikogs/broccli/v3"
 )
 
 func main() {
-	cli := broccli.NewCLI("hooked-jenkins", "Tiny API to receive GitHub Webhooks and trigger Jenkins jobs", "mg@computerclub.pl")
+	cli := broccli.NewBroccli("hooked-jenkins", "Tiny API to receive GitHub Webhooks and trigger Jenkins jobs", "mg@computerclub.pl")
 
-	cmd := cli.AddCmd("start", "Start API", startHandler)
-	cmd.AddFlag("config", "c", "FILE", "Configuration file", broccli.TypePathFile, broccli.IsRegularFile|broccli.IsExistent)
-	cmd.AddFlag("loglevel", "l", "", "One of NONE,ERR,WARN,DEBUG", broccli.TypeString, 0)
+	cmd := cli.Command("start", "Start API", startHandler)
+	cmd.Flag("config", "c", "FILE", "Configuration file", broccli.TypePathFile, broccli.IsRegularFile|broccli.IsExistent)
+	cmd.Flag("loglevel", "l", "", "One of NONE,ERR,WARN,DEBUG", broccli.TypeString, 0)
 
-	_ = cli.AddCmd("version", "Prints version", versionHandler)
+	_ = cli.Command("version", "Prints version", versionHandler)
 	if len(os.Args) == 2 && (os.Args[1] == "-v" || os.Args[1] == "--version") {
 		os.Args = []string{"App", "version"}
 	}
 
-	os.Exit(cli.Run())
+	os.Exit(cli.Run(context.Background()))
 }
 
-func versionHandler(c *broccli.CLI) int {
+func versionHandler(ctx context.Context, c *broccli.Broccli) int {
 	fmt.Fprintf(os.Stdout, VERSION+"\n")
 	return 0
 }
 
-func startHandler(c *broccli.CLI) int {
+func startHandler(ctx context.Context, c *broccli.Broccli) int {
 	logLevel := loglevel.GetLogLevelFromString(c.Flag("loglevel"))
 
 	app := &hookedJenkins{
