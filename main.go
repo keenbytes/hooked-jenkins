@@ -5,12 +5,12 @@ import (
 	"fmt"
 	"os"
 
-	"gopkg.pl/mikogs/octo-linter/pkg/loglevel"
-	"gopkg.pl/mikogs/broccli/v3"
+	"github.com/keenbytes/octo-linter/pkg/loglevel"
+	"github.com/keenbytes/broccli/v3"
 )
 
 func main() {
-	cli := broccli.NewBroccli("hooked-jenkins", "Tiny API to receive GitHub Webhooks and trigger Jenkins jobs", "mg@computerclub.pl")
+	cli := broccli.NewBroccli("hooked-jenkins", "Tiny API to receive GitHub Webhooks and trigger Jenkins jobs", "mg@keenbytes.co")
 
 	cmd := cli.Command("start", "Start API", startHandler)
 	cmd.Flag("config", "c", "FILE", "Configuration file", broccli.TypePathFile, broccli.IsRegularFile|broccli.IsExistent)

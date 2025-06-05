@@ -13,10 +13,10 @@ import (
 	"time"
 
 	"github.com/gorilla/mux"
-	"gopkg.pl/mikogs/hooked-jenkins/pkg/githubwebhookpayload"
-	"gopkg.pl/mikogs/hooked-jenkins/pkg/jenkins"
-	jenkinsapi "gopkg.pl/mikogs/hooked-jenkins/pkg/jenkinsapi"
-	"gopkg.pl/mikogs/hooked-jenkins/pkg/trigger"
+	"github.com/keenbytes/hooked-jenkins/pkg/githubwebhookpayload"
+	"github.com/keenbytes/hooked-jenkins/pkg/jenkins"
+	jenkinsapi "github.com/keenbytes/hooked-jenkins/pkg/jenkinsapi"
+	"github.com/keenbytes/hooked-jenkins/pkg/trigger"
 )
 
 type hookedJenkins struct {

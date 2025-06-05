@@ -5,8 +5,8 @@ import (
 	"os"
 
 	"gopkg.in/yaml.v2"
-	"gopkg.pl/mikogs/hooked-jenkins/pkg/jenkins"
-	"gopkg.pl/mikogs/hooked-jenkins/pkg/trigger"
+	"github.com/keenbytes/hooked-jenkins/pkg/jenkins"
+	"github.com/keenbytes/hooked-jenkins/pkg/trigger"
 )
 
 type config struct {
