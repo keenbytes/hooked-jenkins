@@ -7,8 +7,8 @@ import (
 	"fmt"
 	"io"
 	"log"
+	"log/slog"
 	"net/http"
-	"strconv"
 	"strings"
 	"time"
 
@@ -21,15 +21,14 @@ import (
 
 type hookedJenkins struct {
 	config   *config
-	logLevel int
 }
 
 func (hj *hookedJenkins) startAPI() {
 	router := mux.NewRouter()
 	router.HandleFunc("/", hj.apiHandler).Methods("POST")
 
-	log.Print("Starting daemon listening on " + hj.config.Port + "...")
-	log.Fatal(http.ListenAndServe(fmt.Sprint(":%s", hj.config.Port), router))
+	slog.Info(fmt.Sprintf("Starting daemon listening on %s ...", hj.config.Port))
+	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%s", hj.config.Port), router))
 }
 
 func (hj *hookedJenkins) apiHandler(w http.ResponseWriter, r *http.Request) {
@@ -70,14 +69,14 @@ func (hj *hookedJenkins) processGitHubPayload(b *([]byte), event string) error {
 	j := make(map[string]interface{})
 	err := json.Unmarshal(*b, &j)
 	if err != nil {
-		return errors.New("Got non-JSON payload")
+		return errors.New("got non-JSON payload")
 	}
 
 	if hj.config.Triggers.Jenkins != nil {
 		for _, t := range hj.config.Triggers.Jenkins {
 			err = hj.processPayloadOnJenkinsTrigger(&t, j, event)
 			if err != nil {
-				log.Print("Error processing endpoint " + t.Endpoint + ". Breaking.")
+				slog.Error(fmt.Sprintf("error processing endpoint %s. Breaking.", t.Endpoint))
 				break
 			}
 		}
@@ -115,7 +114,7 @@ func (hj *hookedJenkins) forwardGitHubPayload(b *([]byte), h http.Header) error 
 			return err
 		}
 
-		log.Print("Forwarded to endpoint " + f.URL)
+		slog.Info(fmt.Sprintf("Forwarded to endpoint %s", f.URL))
 	}
 
 	return nil
@@ -166,7 +165,7 @@ func (hj *hookedJenkins) processPayloadOnJenkinsTrigger(jenkinstrigger *trigger.
 func (hj *hookedJenkins) processJenkinsEndpointRetries(endpointDef *jenkins.JenkinsEndpoint, repo string, branch string, retryDelay int, retryCount int) error {
 	iterations := int(0)
 	if retryCount <= 0 {
-		return errors.New("Unable to post to endpoint " + endpointDef.Path)
+		return fmt.Errorf("unable to post to endpoint %s", endpointDef.Path)
 	}
 
 	for iterations < retryCount {
@@ -182,7 +181,7 @@ func (hj *hookedJenkins) processJenkinsEndpointRetries(endpointDef *jenkins.Jenk
 
 		resp, err := jenkinsapi.Post(hj.config.Jenkins.BaseURL+"/"+endpointPath, hj.config.Jenkins.User, hj.config.Jenkins.Token, crumb)
 		if err != nil {
-			log.Print("Error from request to " + endpointPath)
+			slog.Error(fmt.Sprintf("Error from request to %s", endpointPath))
 			time.Sleep(time.Second * time.Duration(retryDelay))
 			iterations++
 			continue
@@ -191,8 +190,7 @@ func (hj *hookedJenkins) processJenkinsEndpointRetries(endpointDef *jenkins.Jenk
 		log.Print("Posted to endpoint " + endpointPath)
 
 		if !endpointDef.CheckHTTPStatus(resp.StatusCode) {
-			rs := strconv.Itoa(resp.StatusCode)
-			log.Print("HTTP Status " + rs + " different than expected ")
+			slog.Info(fmt.Sprintf("HTTP Status %d different than expected ", resp.StatusCode))
 			time.Sleep(time.Second * time.Duration(retryDelay))
 			iterations++
 			continue
@@ -204,15 +202,15 @@ func (hj *hookedJenkins) processJenkinsEndpointRetries(endpointDef *jenkins.Jenk
 }
 
 func (hj *hookedJenkins) printIteration(i int, rc int) {
-	log.Print("Retry: (" + strconv.Itoa(i+1) + "/" + strconv.Itoa(rc) + ")")
+	slog.Info(fmt.Sprintf("Retry: (%d/%d)", i+1, rc))
 }
 
 func (hj *hookedJenkins) getCrumbAndSleep(u string, t string, rd int) (string, error) {
 	crumb, err := jenkinsapi.GetCrumb(hj.config.Jenkins.BaseURL, u, t)
 	if err != nil {
-		log.Print("Error getting crumb")
+		slog.Error("Error getting crumb")
 		time.Sleep(time.Second * time.Duration(rd))
-		return "", errors.New("Error getting crumb")
+		return "", errors.New("error getting crumb")
 	}
 	return crumb, nil
 }
