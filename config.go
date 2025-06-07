@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"os"
 
-	"gopkg.in/yaml.v2"
 	"github.com/keenbytes/hooked-jenkins/pkg/jenkins"
 	"github.com/keenbytes/hooked-jenkins/pkg/trigger"
+	"gopkg.in/yaml.v2"
 )
 
 type config struct {
@@ -16,7 +16,6 @@ type config struct {
 	Triggers trigger.Trigger `json:"triggers"`
 	Forward  *([]forward)    `json:"forward"`
 	Secret   string          `json:"secret,omitempty"`
-	logLevel int
 }
 
 func (cfg *config) readFile(p string) error {

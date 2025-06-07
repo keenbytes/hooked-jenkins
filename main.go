@@ -3,10 +3,11 @@ package main
 import (
 	"context"
 	"fmt"
+	"log/slog"
 	"os"
 
-	"github.com/keenbytes/octo-linter/pkg/loglevel"
 	"github.com/keenbytes/broccli/v3"
+	"github.com/keenbytes/octo-linter/pkg/loglevel"
 )
 
 func main() {
@@ -32,16 +33,18 @@ func versionHandler(ctx context.Context, c *broccli.Broccli) int {
 func startHandler(ctx context.Context, c *broccli.Broccli) int {
 	logLevel := loglevel.GetLogLevelFromString(c.Flag("loglevel"))
 
-	app := &hookedJenkins{
-		logLevel: logLevel,
+	opts := &slog.HandlerOptions{
+		Level: logLevel,
 	}
+	logger := slog.New(slog.NewTextHandler(os.Stderr, opts))
+	slog.SetDefault(logger)
 
-	cfg := &config{
-		logLevel: logLevel,
-	}
+	app := &hookedJenkins{}
+
+	cfg := &config{}
 	err := cfg.readFile(c.Flag("config"))
 	if err != nil {
-		printErr(logLevel, err, "error reading config file")
+		slog.Error(fmt.Sprintf("error reading config file: %s", err.Error()))
 		return 31
 	}
 
@@ -52,12 +55,4 @@ func startHandler(ctx context.Context, c *broccli.Broccli) int {
 	<-done
 
 	return 0
-}
-
-func printErr(logLevel int, err error, msg string) {
-	if logLevel == loglevel.LogLevelNone {
-		return
-	}
-
-	fmt.Fprintf(os.Stderr, "!!!:%s: %s\n", msg, err.Error())
 }
